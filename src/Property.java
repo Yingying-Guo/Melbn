@@ -50,8 +50,8 @@ public class Property {
 	public double getRating() {
 		return rating;
 	}
-	public int getPrice() {
-		return price;
+	public double getPrice() {
+		return price * 1.0;
 	}
 	public double getServiceFee() {
 		return serviceFee;

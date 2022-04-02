@@ -1,6 +1,10 @@
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -19,40 +23,180 @@ public class Melbn{
 	private Property userChoice; //store the user's chosen information 
 	private ReadFromFile csv;
 	private User user;
+	private Date checkin;
+	private Date checkout;
 	
 	//Show property details
 	public int propertyDisplay() {
 		String choice = "N";
-		System.out.println("Property:\t\t" + userChoice.getProperty());
-		System.out.println("Type of place:\t\t" + userChoice.getTypeOfPlace());
-		System.out.println("Location:\t\t" + userChoice.getLocation());
-		System.out.println("Rating:\t\t\t" + userChoice.getRating());
-		System.out.println("Description:\t\t" + userChoice.getDescription());
-		System.out.println("Number of guests:\t" + userChoice.getMaximumOfGuests());
-		System.out.println("Price:\t\t\t$" + userChoice.getPrice() + "\t(" + ")");
-		System.out.println("Discounted price:\t$" + userChoice.getPrice() + "\t(" + ")");
-		System.out.println("Service fee:\t\t$" + userChoice.getPrice() + "\t(" + ")");
-		System.out.println("Cleaning fee:\t\t" + userChoice.getPrice());
-		System.out.println("Total:\t\t\t" + userChoice.getPrice());
-		System.out.print("Would you like to reserve the property (Y/N)? ");
-		choice = input.nextLine();
-		if(choice.toUpperCase().equals("N")) return 0;
-		return 1;
+		while(true) {
+			System.out.println("-------------------------------------------------------------------------------\n"
+					+ "> Show property details\n"
+					+ "-------------------------------------------------------------------------------");
+			try {
+				System.out.println("Property:\t\t" + userChoice.getProperty());
+				System.out.println("Type of place:\t\t" + userChoice.getTypeOfPlace());
+				System.out.println("Location:\t\t" + userChoice.getLocation());
+				System.out.println("Rating:\t\t\t" + userChoice.getRating());
+				System.out.println("Description:\t\t" + userChoice.getDescription());
+				System.out.println("Number of guests:\t" + userChoice.getMaximumOfGuests());
+				System.out.println("Price:\t\t\t$" + user.getPrice() + "\t($" + String.format("%.2f", userChoice.getPrice()) + " * " + user.getDates() + " nights)");
+				System.out.println("Discounted price:\t$" + user.getDiscountedPrice() + "\t($" + String.format("%.2f", user.getDiscount()) + " * " + user.getDates() + " nights)");
+				System.out.println("Service fee:\t\t$" + user.getServiceFee() + "\t($" + String.format("%.2f", userChoice.getServiceFee()) + " * " + user.getDates() + " nights)");
+				System.out.println("Cleaning fee:\t\t$" + user.getCleaningFee());
+				System.out.println("Total:\t\t\t$" + user.getTotal());
+				System.out.print("Would you like to reserve the property (Y/N)? ");
+				choice = input.nextLine();
+				if(choice == "") throw new MelbnException("You need to input something. Please select again.");
+				if(!choice.toUpperCase().equals("N") && !choice.toUpperCase().equals("Y")) throw new MelbnException("You need to input Y/N. Please select again.");
+				if(choice.toUpperCase().equals("N")) return 0;
+				return 1;
+			}catch(MelbnException e) {
+				System.err.println(e.getMessage());
+			}
+		}
 	}
 	
 	//Provide dates
 	public void getDates() {
-		
+		System.out.println("-------------------------------------------------------------------------------\n"
+				+ "> Provide dates\n"
+				+ "-------------------------------------------------------------------------------");
+		String pattern = "^(?:(?!0000)[0-9]{4}(-)(?:(?:0?[1-9]|1[0-2])(-)(?:0?[1-9]|1[0-9]|2[0-8])|(?:0?[13-9]|1[0-2])(-)(?:29|30)|(?:0?[13578]|1[02])(-)31)|(?:[0-9]{2}(?:0[48]|[2468][048]|[13579][26])|(?:0[48]|[2468][048]|[13579][26])00)(-)0?2(-)29)$";
+		Pattern p  = Pattern.compile(pattern);
+		Matcher m;
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar calendar = Calendar.getInstance();
+        Date todayDate = calendar.getTime();
+        todayDate.setSeconds(0);
+        todayDate.setHours(0);
+        todayDate.setMinutes(0);
+        String checkinDate, checkoutDate;
+        String[] date;
+		while(true) {
+			try {
+				System.out.print("Please provide check-in date (dd/mm/yyyy): ");
+				checkinDate = input.nextLine();
+				if(checkinDate == "") throw new MelbnException("You need to input something. Please select again.");
+				date = checkinDate.split("/");
+				checkinDate = date[2] + "-" + date[1] + "-" + date[0];
+				m = p.matcher(checkinDate);
+				if(!m.find()) throw new MelbnException("You need to input a valid date. Please input again.");
+				checkin = format.parse(checkinDate);
+				if(checkin.getTime() < todayDate.getTime()) throw new MelbnException("You need to input a date equals to or behind today. Please input again.");
+				break;
+			}catch(MelbnException ex) {
+				System.err.println(ex.getMessage());
+			}catch (ParseException e) {
+		        e.printStackTrace();
+		    }
+		}
+		while(true) {
+			try {
+				System.out.print("Please provide checkout date (dd/mm/yyyy): ");
+				checkoutDate = input.nextLine();
+				if(checkoutDate == "") throw new MelbnException("You need to input something. Please select again.");
+				date = checkoutDate.split("/");
+				checkoutDate = date[2] + "-" + date[1] + "-" + date[0];
+				m = p.matcher(checkoutDate);
+				if(!m.find()) throw new MelbnException("You need to input a valid date. Please input again.");
+				checkout = format.parse(checkoutDate);
+				if(checkout.getTime() <= checkin.getTime()) throw new MelbnException("You need to input a date behind checkin date. Please input again.");
+				break;
+			}catch(MelbnException ex) {
+				System.err.println(ex.getMessage());
+			}catch (ParseException e) {
+		        e.printStackTrace();
+		    }
+		}
+		user = new User(checkin, checkout, userChoice);
 	}
 	
 	//Provide personal information
-	public void getPersonalDetails() {
-		
+	public int getPersonalDetails() {
+		String givenName, surname, email, choice;
+		int numberOfGuests;
+		System.out.println("-------------------------------------------------------------------------------\n"
+				+ "> Provide personal information\n"
+				+ "-------------------------------------------------------------------------------");
+		while(true) {
+			try {
+				System.out.print("Please provide your given name: ");
+				givenName = input.nextLine();
+				if(givenName == "") throw new MelbnException("You need to input something. Please select again.");
+				break;
+			}catch(MelbnException ex) {
+				System.err.println(ex.getMessage());
+			}
+		}
+		while(true) {
+			try {
+				System.out.print("Please provide your surname: ");
+				surname = input.nextLine();
+				if(surname == "") throw new MelbnException("You need to input something. Please select again.");
+				break;
+			}catch(MelbnException ex) {
+				System.err.println(ex.getMessage());
+			}
+		}
+		while(true) {
+			try {
+				System.out.print("Please provide your email address: ");
+				email = input.nextLine();
+				if(email == "") throw new MelbnException("You need to input something. Please select again.");
+				String pattern = "^[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*@[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*\\.[a-z]{2,}$";
+				Pattern p  = Pattern.compile(pattern);
+				Matcher m;
+				m = p.matcher(email);
+				if(!m.find()) throw new MelbnException("You need to input a valid email address. Please input again.");
+				break;
+			}catch(MelbnException ex) {
+				System.err.println(ex.getMessage());
+			}
+		}
+		while(true) {
+			try {
+				System.out.print("Please provide number of guests: ");
+				String num = input.nextLine();
+				if(num == "") throw new MelbnException("You need to input something. Please select again.");
+				numberOfGuests = Integer.parseInt(num);
+				if(numberOfGuests < 1) throw new MelbnException("You need to input a positive number. Please select again.");
+				if(numberOfGuests > userChoice.getMaximumOfGuests()) throw new MelbnException("You need to input the number under the maximum. Please select again.");
+				break;
+			}catch(NumberFormatException ex) {
+				System.err.println("You need to input a digit of number. Please select again.");	
+			}catch(MelbnException ex) {
+				System.err.println(ex.getMessage());
+			}
+		}
+		while(true) {
+			try {
+				System.out.print("Confirm and pay (Y/N): ");
+				choice = input.nextLine();
+				if(choice == "") throw new MelbnException("You need to input something. Please select again.");
+				if(!choice.toUpperCase().equals("N") && !choice.toUpperCase().equals("Y")) throw new MelbnException("You need to input Y/N. Please select again.");
+				if(choice.toUpperCase().equals("N")) return 0;
+				user.setGivenName(givenName);
+				user.setSurname(surname);
+				user.setEmail(email);
+				user.setNumberOfGuests(numberOfGuests);
+				break;
+			}catch(MelbnException ex) {
+				System.err.println(ex.getMessage());
+			}
+		}
+		return 1;
 	}
 	
 	//display personal information
 	public void personalDisplay() {
-		
+		System.out.println("Name:\t\t\t" + user.getName());
+		System.out.println("Email:\t\t\t" + user.getEmail());
+		System.out.println("Your stay:\t\t" + user.getStay());
+		System.out.println("Who's coming:\t\t" + user.getNumberOfGuests() + (user.getNumberOfGuests() > 1 ? " guests" : " guest"));
+		System.out.println("Check-in date:\t\t" + user.getCheckinDate());
+		System.out.println("Checkout date:\t\t" + user.getCheckoutDate());
+		System.out.println("\nTotal payment:\t\t$" + String.format("%.2f", user.getTotal()));
 	}
 	
 	//start the system
@@ -75,7 +219,7 @@ public class Melbn{
 //				}
 //			}
 			csv.finishLoading();
-	//		exit();
+			exit();
 		}
 		System.err.println("System wrong.");
 	}
@@ -111,9 +255,12 @@ public class Melbn{
 						System.exit(0);
 						break;
 					case -1:
-//						System.out.println(userChoice.getProperty());
-						menuName = propertyDisplay();
-						if(menuName != 0) flag = false;
+						getDates();
+						if(propertyDisplay() == 0 || getPersonalDetails() == 0) {
+							menuName = 0;
+							continue;
+						}
+						flag = false;
 						break;
 					default:
 						throw new MelbnException("You need to input a number in the range from 1 to 4. Please select again.");
