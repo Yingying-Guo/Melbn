@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Set;
 
 public class ReadFromFile {
 	private File csv = null;
@@ -26,8 +27,8 @@ public class ReadFromFile {
 		int i = 0;
 		try {
 			while((lineData = textFile.readLine()) != null) {
-				if(i == 0) continue;
-				
+//				System.out.println(i);
+				if(i++ == 0) continue;
 				data = lineData.split(",");
 				int maximumOfGuests = Integer.parseInt(data[5]);
 				double rating = Double.parseDouble(data[6]);
@@ -39,8 +40,7 @@ public class ReadFromFile {
 					data[0], data[1], data[2], data[3], data[4], 
 					maximumOfGuests, rating, price, serviceFee, cleaningFee, weeklyDiscount
 					);
-				if(!store.addLocationList(data[1], temp) || !store.addTypeOfPlaceList(data[3], temp) || !store.addRatingList(rating, temp)) return false;
-				i++;
+				if(!store.addMelbnList(temp) || !store.addLocationList(data[1], temp) || !store.addTypeOfPlaceList(data[3], temp) || !store.addRatingList(rating, temp)) return false;
 			 }
 			if(i <= 11) return true;
 		}catch(IOException e) {
@@ -48,6 +48,7 @@ public class ReadFromFile {
 		}
 		return false;
 	}
+	
 	public void finishLoading() throws IOException {
 		try {
 			textFile.close();
