@@ -40,11 +40,11 @@ public class Melbn{
 				System.out.println("Rating:\t\t\t" + userChoice.getRating());
 				System.out.println("Description:\t\t" + userChoice.getDescription());
 				System.out.println("Number of guests:\t" + userChoice.getMaximumOfGuests());
-				System.out.println("Price:\t\t\t$" + user.getPrice() + "\t($" + String.format("%.2f", userChoice.getPrice()) + " * " + user.getDates() + " nights)");
-				System.out.println("Discounted price:\t$" + user.getDiscountedPrice() + "\t($" + String.format("%.2f", user.getDiscount()) + " * " + user.getDates() + " nights)");
-				System.out.println("Service fee:\t\t$" + user.getServiceFee() + "\t($" + String.format("%.2f", userChoice.getServiceFee()) + " * " + user.getDates() + " nights)");
-				System.out.println("Cleaning fee:\t\t$" + user.getCleaningFee());
-				System.out.println("Total:\t\t\t$" + user.getTotal());
+				System.out.println("Price:\t\t\t$" + String.format("%.2f", user.getPrice()) + "\t($" + String.format("%.2f", userChoice.getPrice() * 1.0) + " * " + user.getDates() + " nights)");
+				System.out.println("Discounted price:\t$" + String.format("%.2f", user.getDiscountedPrice()) + "\t($" + String.format("%.2f", user.getDiscount()) + " * " + user.getDates() + " nights)");
+				System.out.println("Service fee:\t\t$" + String.format("%.2f", user.getServiceFee()) + "\t($" + String.format("%.2f", userChoice.getServiceFee()) + " * " + user.getDates() + " nights)");
+				System.out.println("Cleaning fee:\t\t$" + String.format("%.2f", user.getCleaningFee() * 1.0));
+				System.out.println("Total:\t\t\t$" + String.format("%.2f", user.getTotal()));
 				System.out.print("Would you like to reserve the property (Y/N)? ");
 				choice = input.nextLine();
 				if(choice == "") throw new MelbnException("You need to input something. Please select again.");

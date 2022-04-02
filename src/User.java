@@ -62,7 +62,7 @@ public class User {
 		return givenName + " " + surname;
 	}
 	public String getStay() {
-		return book.getProperty();
+		return book.getProperty() + "hosted by " + book.getHost();
 	}
 	public String getEmail() {
 		return email;
