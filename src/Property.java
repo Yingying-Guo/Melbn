@@ -3,7 +3,7 @@ public class Property {
 	private String property;
 	private String location;
 	private String description;
-	private String TypeOfPlace;
+	private String typeOfPlace;
 	private String host;
 	private int maximumOfGuests;
 	private double rating;
@@ -17,7 +17,7 @@ public class Property {
 		this.property = property;
 		this.location = location;
 		this.description = description;
-		TypeOfPlace = typeOfPlace;
+		this.typeOfPlace = typeOfPlace;
 		this.host = host;
 		this.maximumOfGuests = maximumOfGuests;
 		this.rating = rating;
@@ -39,7 +39,7 @@ public class Property {
 		return description;
 	}
 	public String getTypeOfPlace() {
-		return TypeOfPlace;
+		return typeOfPlace;
 	}
 	public String getHost() {
 		return host;
@@ -72,7 +72,7 @@ public class Property {
 		this.description = description;
 	}
 	public void setTypeOfPlace(String typeOfPlace) {
-		TypeOfPlace = typeOfPlace;
+		this.typeOfPlace = typeOfPlace;
 	}
 	public void setHost(String host) {
 		this.host = host;

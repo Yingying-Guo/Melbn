@@ -1,10 +1,12 @@
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
 
-public class Melbn<E>{
+public class Melbn{
 	private ArrayList<Property> melbnList;
 	private HashMap<String, ArrayList<Property>> locationList;
 	private HashMap<String, ArrayList<Property>> typeOfPlaceList;
@@ -12,6 +14,7 @@ public class Melbn<E>{
 	private Scanner input;
 	private ArrayList<Property> matchingList;
 	private Property userChoice; //store the user's chosen information 
+	private ReadFromFile csv;
 	
 	//find the matching list by string
 	public ArrayList<Property> findMatchingList(int listName, String Information){
@@ -135,12 +138,6 @@ public class Melbn<E>{
 	//	3 - search by rating
 	//  4 - exit
 	// -1 - complete the selection and ask for user's personal information
-	//display the menu
-	//0 - main menu; 
-	//1 - search by location; 
-	//2 - search by type of place; 
-	//3 - search by rating; 
-	//4 - exit the system; 
 	public void menuDisplay(int menuName) throws Exception{
 		boolean flag = true;
 		while(flag) {
@@ -176,10 +173,6 @@ public class Melbn<E>{
 		}
 	}
 	
-	//start running the system
-		
-	//exit the system
-
 	//exit the system
 	public void exit(){
 		System.out.println("-------------------------------------------------------------------------------\n"
@@ -190,11 +183,9 @@ public class Melbn<E>{
 		input.close();
 		System.exit(0);
 	}
-	
-	//initial the data structure, user input stream and user's chosen information
-	
+
 	//initial all the properties and data structure
-	public Melbn(){
+	public Melbn() throws FileNotFoundException, IOException{
 		//initial the data structure
 		melbnList = new ArrayList<Property>();
 		locationList = new HashMap<>();
@@ -204,11 +195,10 @@ public class Melbn<E>{
 		//initial the user input stream
 		input = new Scanner(System.in);
 		userChoice = new Property();
+		csv = new ReadFromFile("Melbnb.csv");
 	}
-	
-	//display the main menu and get the user's choice
-	
-	//diaplay the main menu
+
+	//display the main menu
 	public int mainMenuDisplay() throws Exception{
 		String mainChoice = "";
 		int mainMenuChoice = -1;
@@ -236,5 +226,49 @@ public class Melbn<E>{
 			}
 		}
 		return mainMenuChoice;
+	}
+
+	public ArrayList<Property> getMelbnList() {
+		return melbnList;
+	}
+
+	public void addMelbnList(Property item) {
+		melbnList.add(item);
+	}
+
+	public HashMap<String, ArrayList<Property>> getLocationList() {
+		return locationList;
+	}
+
+	public boolean addLocationList(String location, Property item) {
+		if(locationList.containsKey(location) && locationList.get(location).contains(item)) return false;
+		if(!locationList.containsKey(location)) locationList.put(location, new ArrayList<Property>());
+		locationList.get(location).add(item);
+		return true;
+	}
+
+	public HashMap<String, ArrayList<Property>> getTypeOfPlaceList() {
+		return typeOfPlaceList;
+	}
+
+	//add data to the location matching list
+	public boolean addTypeOfPlaceList(String typeOfPlace, Property item) {
+		if(typeOfPlaceList.containsKey(typeOfPlace) && typeOfPlaceList.get(typeOfPlace).contains(item)) return false;
+		if(!typeOfPlaceList.containsKey(typeOfPlace)) typeOfPlaceList.put(typeOfPlace, new ArrayList<Property>());
+		typeOfPlaceList.get(typeOfPlace).add(item);
+		return true;
+	}
+
+	//add data to the type of place matching list
+	public TreeMap<Double, ArrayList<Property>> getRatingList() {
+		return ratingList;
+	}
+ 
+	//add data to the rating matching list
+	public boolean addRatingList(double rating, Property item) {
+		if(ratingList.containsKey(rating) && ratingList.get(rating).contains(item)) return false;
+		if(!ratingList.containsKey(rating)) ratingList.put(rating, new ArrayList<Property>());
+		ratingList.get(rating).add(item);
+		return true;
 	}
 }
