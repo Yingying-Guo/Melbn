@@ -26,31 +26,51 @@ public class Melbn{
 	private Date checkin;
 	private Date checkout;
 	
+	//justify the input from user
+	public int isValidInput(int type, String input) throws MelbnException{
+		if(input == "") throw new MelbnException("You need to input something. Please select again.");
+		switch(type) {
+			case 1: // N/Y
+				if(!input.toUpperCase().equals("N") && !input.toUpperCase().equals("Y")) throw new MelbnException("You need to input Y/N. Please select again.");
+				if(input.toUpperCase().equals("N")) return 0;
+				return 1;
+			case 2:  // Sting
+				break;
+			case 3:  // email
+				String pattern = "^[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*@[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*\\.[a-z]{2,}$";
+				Pattern p  = Pattern.compile(pattern);
+				Matcher m;
+				m = p.matcher(input);
+				if(!m.find()) throw new MelbnException("You need to input a valid email address. Please input again.");
+				break;
+		}
+		return 0;
+		
+	}
+	
 	//Show property details
-	public int propertyDisplay() {
-		String choice = "N";
+	public int propertyDisplay() throws MelbnException{
+		String choice = "";
+		System.out.println("-------------------------------------------------------------------------------\n"
+				+ "> Show property details\n"
+				+ "-------------------------------------------------------------------------------");
+			
+			System.out.println("Property:\t\t" + userChoice.getProperty());
+			System.out.println("Type of place:\t\t" + userChoice.getTypeOfPlace());
+			System.out.println("Location:\t\t" + userChoice.getLocation());
+			System.out.println("Rating:\t\t\t" + userChoice.getRating());
+			System.out.println("Description:\t\t" + userChoice.getDescription());
+			System.out.println("Number of guests:\t" + userChoice.getMaximumOfGuests());
+			System.out.println("Price:\t\t\t$" + String.format("%.2f", user.getPrice()) + "\t($" + String.format("%.2f", userChoice.getPrice() * 1.0) + " * " + user.getDates() + " nights)");
+			System.out.println("Discounted price:\t$" + String.format("%.2f", user.getDiscountedPrice()) + "\t($" + String.format("%.2f", user.getDiscount()) + " * " + user.getDates() + " nights)");
+			System.out.println("Service fee:\t\t$" + String.format("%.2f", user.getServiceFee()) + "\t($" + String.format("%.2f", userChoice.getServiceFee()) + " * " + user.getDates() + " nights)");
+			System.out.println("Cleaning fee:\t\t$" + String.format("%.2f", user.getCleaningFee() * 1.0));
+			System.out.println("Total:\t\t\t$" + String.format("%.2f", user.getTotal()));
 		while(true) {
-			System.out.println("-------------------------------------------------------------------------------\n"
-					+ "> Show property details\n"
-					+ "-------------------------------------------------------------------------------");
 			try {
-				System.out.println("Property:\t\t" + userChoice.getProperty());
-				System.out.println("Type of place:\t\t" + userChoice.getTypeOfPlace());
-				System.out.println("Location:\t\t" + userChoice.getLocation());
-				System.out.println("Rating:\t\t\t" + userChoice.getRating());
-				System.out.println("Description:\t\t" + userChoice.getDescription());
-				System.out.println("Number of guests:\t" + userChoice.getMaximumOfGuests());
-				System.out.println("Price:\t\t\t$" + String.format("%.2f", user.getPrice()) + "\t($" + String.format("%.2f", userChoice.getPrice() * 1.0) + " * " + user.getDates() + " nights)");
-				System.out.println("Discounted price:\t$" + String.format("%.2f", user.getDiscountedPrice()) + "\t($" + String.format("%.2f", user.getDiscount()) + " * " + user.getDates() + " nights)");
-				System.out.println("Service fee:\t\t$" + String.format("%.2f", user.getServiceFee()) + "\t($" + String.format("%.2f", userChoice.getServiceFee()) + " * " + user.getDates() + " nights)");
-				System.out.println("Cleaning fee:\t\t$" + String.format("%.2f", user.getCleaningFee() * 1.0));
-				System.out.println("Total:\t\t\t$" + String.format("%.2f", user.getTotal()));
 				System.out.print("Would you like to reserve the property (Y/N)? ");
 				choice = input.nextLine();
-				if(choice == "") throw new MelbnException("You need to input something. Please select again.");
-				if(!choice.toUpperCase().equals("N") && !choice.toUpperCase().equals("Y")) throw new MelbnException("You need to input Y/N. Please select again.");
-				if(choice.toUpperCase().equals("N")) return 0;
-				return 1;
+				return isValidInput(1, choice);
 			}catch(MelbnException e) {
 				System.err.println(e.getMessage());
 			}
@@ -123,7 +143,7 @@ public class Melbn{
 			try {
 				System.out.print("Please provide your given name: ");
 				givenName = input.nextLine();
-				if(givenName == "") throw new MelbnException("You need to input something. Please select again.");
+				isValidInput(2, givenName);
 				break;
 			}catch(MelbnException ex) {
 				System.err.println(ex.getMessage());
@@ -133,7 +153,7 @@ public class Melbn{
 			try {
 				System.out.print("Please provide your surname: ");
 				surname = input.nextLine();
-				if(surname == "") throw new MelbnException("You need to input something. Please select again.");
+				isValidInput(2, surname);
 				break;
 			}catch(MelbnException ex) {
 				System.err.println(ex.getMessage());
@@ -143,12 +163,7 @@ public class Melbn{
 			try {
 				System.out.print("Please provide your email address: ");
 				email = input.nextLine();
-				if(email == "") throw new MelbnException("You need to input something. Please select again.");
-				String pattern = "^[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*@[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*\\.[a-z]{2,}$";
-				Pattern p  = Pattern.compile(pattern);
-				Matcher m;
-				m = p.matcher(email);
-				if(!m.find()) throw new MelbnException("You need to input a valid email address. Please input again.");
+				isValidInput(3, email);
 				break;
 			}catch(MelbnException ex) {
 				System.err.println(ex.getMessage());
@@ -173,9 +188,7 @@ public class Melbn{
 			try {
 				System.out.print("Confirm and pay (Y/N): ");
 				choice = input.nextLine();
-				if(choice == "") throw new MelbnException("You need to input something. Please select again.");
-				if(!choice.toUpperCase().equals("N") && !choice.toUpperCase().equals("Y")) throw new MelbnException("You need to input Y/N. Please select again.");
-				if(choice.toUpperCase().equals("N")) return 0;
+				if(isValidInput(1, choice) == 0) return 0;
 				user.setGivenName(givenName);
 				user.setSurname(surname);
 				user.setEmail(email);
@@ -297,7 +310,13 @@ public class Melbn{
 		//initial the user input stream
 		input = new Scanner(System.in);
 		userChoice = new Property();
-		csv = new ReadFromFile("Melbnb.csv");
+		try {
+			csv = new ReadFromFile("Melbnb.csv");
+		}catch(FileNotFoundException e) {
+			System.err.println("Can not find the file.");
+		}catch(IOException e) {
+			System.err.println("Wrong of file reading.");
+		}
 	}
 
 	//display the main menu
@@ -329,7 +348,7 @@ public class Melbn{
 		}
 		return mainMenuChoice;
 	}
-
+	
 	//add data to the melbn list 
 	public boolean addMelbnList(Property item) {
 		if(melbnList.contains(item)) return false;
@@ -460,7 +479,7 @@ public class Melbn{
 			try {
 				if(typeFlag) {
 					userInput = input.nextLine();
-					}
+				}
 				
 				switch(menuName) {
 					case 1: //locationMenu
@@ -476,7 +495,7 @@ public class Melbn{
 								break;
 							}
 						}
-						if(Integer.parseInt(userInput) < 1 || Integer.parseInt(userInput) > typeOfPlaceList.keySet().size() + 1) throw new MelbnException("You need to input a number in the range of the displayed list. Please select again.");
+						if(Integer.parseInt(userInput) < 1 || Integer.parseInt(userInput) > typeOfPlaceList.keySet().size() + 1) throw new MelbnException("You need to a number in the range of the displayed list. Please select again.");
 						matchingList = findMatchingList(2, typeChoice);
 //						System.out.println(matchingList.size());
 						break;

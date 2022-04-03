@@ -10,14 +10,8 @@ public class ReadFromFile {
 	private BufferedReader textFile = null;
 	
 	public ReadFromFile(String fileName) throws FileNotFoundException, IOException {
-		try {
-			csv = new File(fileName);
-			textFile = new BufferedReader(new FileReader(csv));
-		}catch(FileNotFoundException e) {
-			System.err.println("Can not find the file.");
-		}catch(IOException e) {
-			System.err.println("Wrong of file reading.");
-		}
+		csv = new File(fileName);
+		textFile = new BufferedReader(new FileReader(csv));
 	}
 	
 	//read the data from csv file and load into the data structure
@@ -42,7 +36,7 @@ public class ReadFromFile {
 					);
 				if(!store.addMelbnList(temp) || !store.addLocationList(data[1], temp) || !store.addTypeOfPlaceList(data[3], temp) || !store.addRatingList(rating, temp)) return false;
 			 }
-			if(i <= 11) return true;
+			if(i <= 11 && i != 0) return true;
 		}catch(IOException e) {
 			System.err.println("Wrong of file reading.");
 		}

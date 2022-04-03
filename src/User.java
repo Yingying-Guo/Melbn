@@ -19,7 +19,11 @@ public class User {
 		dates = (int)((checkoutDate.getTime() - checkinDate.getTime()) / (1000 * 60 * 60 * 24));
 	}
 	
-	public double getPrice() {
+	public User() {
+		
+	}
+	
+ 	public double getPrice() {
 		return dates * book.getPrice();
 	}
 	
@@ -54,7 +58,7 @@ public class User {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         // Convert the date into a
         // string using format() method
-        String dateToString = df.format(checkinDate);
+        String dateToString = df.format(checkoutDate);
 		return dateToString;
 	}
 	
@@ -62,7 +66,7 @@ public class User {
 		return givenName + " " + surname;
 	}
 	public String getStay() {
-		return book.getProperty() + "hosted by " + book.getHost();
+		return book.getProperty() + " hosted by " + book.getHost();
 	}
 	public String getEmail() {
 		return email;

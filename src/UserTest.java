@@ -1,5 +1,6 @@
 import static org.junit.Assert.*;
 
+import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -59,12 +60,7 @@ public class UserTest {
 	
 	@Test
 	public void testGetCheckoutDate() {
-		assertEquals("checkinDate expected is not the same as the returned checkinDate", "2022-04-30", user.getCheckinDate());
-	}
-	
-	@Test
-	public void testGetName() {
-		assertEquals("name expected is not the same as the returned name", , user.getName());
+		assertEquals("checkoutDate expected is not the same as the returned checkinDate", "2022-04-30", user.getCheckoutDate());
 	}
 	
 	@Test
@@ -73,17 +69,84 @@ public class UserTest {
 	}
 	
 	@Test
+	public void testGetDates() {
+		assertEquals("dates expected is not the same as the returned dates", 8, user.getDates());
+	}
+	
+	@Test
+    public void testSetGivenName() throws NoSuchFieldException, IllegalAccessException {
+        //given
+        final User testUser = new User();
+
+        //when
+        testUser.setGivenName("Yingying");
+
+        //then
+        final Field field = testUser.getClass().getDeclaredField("givenName");
+        field.setAccessible(true);
+        assertEquals("givenName didn't match", field.get(testUser), "Yingying");
+    }
+	
+	@Test
+    public void testSetSurname() throws NoSuchFieldException, IllegalAccessException {
+        //given
+        final User testUser = new User();
+
+        //when
+        testUser.setSurname("Guo");
+
+        //then
+        final Field field = testUser.getClass().getDeclaredField("surname");
+        field.setAccessible(true);
+        assertEquals("surname didn't match", field.get(testUser), "Guo");
+    }
+	
+	@Test
+    public void testSetEmail() throws NoSuchFieldException, IllegalAccessException {
+        //given
+        final User testUser = new User();
+
+        //when
+        testUser.setEmail("s3860867@student.rmit.edu.au");
+
+        //then
+        final Field field = testUser.getClass().getDeclaredField("email");
+        field.setAccessible(true);
+        assertEquals("email didn't match", field.get(testUser), "s3860867@student.rmit.edu.au");
+    }
+	
+	@Test
+    public void testSetNumberOfGuests() throws NoSuchFieldException, IllegalAccessException {
+        //given
+        final User testUser = new User();
+
+        //when
+        testUser.setNumberOfGuests(5);
+
+        //then
+        final Field field = testUser.getClass().getDeclaredField("numberOfGuests");
+        field.setAccessible(true);
+        assertEquals("numberOfGuests didn't match", field.get(testUser), 5);
+    }
+	
+	@Test
+	public void testGetName() {
+		user.setGivenName("Yingying");
+		user.setSurname("Guo");
+		assertEquals("name expected is not the same as the returned name", "Yingying Guo", user.getName());
+	}
+	
+	@Test
 	public void testGetEmail() {
-		assertEquals("email expected is not the same as the returned email", , user.getEmail());
+		user.setEmail("s3860867@student.rmit.edu.au");
+		assertEquals("email expected is not the same as the returned email", "s3860867@student.rmit.edu.au", user.getEmail());
 	}
 	
 	@Test
 	public void testGetNumberOfGuests() {
-		assertEquals("numberOfGuests expected is not the same as the returned numberOfGuests", , user.getNumberOfGuests());
+		user.setNumberOfGuests(2);
+		assertEquals("numberOfGuests expected is not the same as the returned numberOfGuests", 2, user.getNumberOfGuests());
 	}
 	
-	@Test
-	public void testGetDates() {
-		assertEquals("dates expected is not the same as the returned dates", 8, user.getDates());
-	}
+	
 }
