@@ -479,6 +479,7 @@ public class Melbn{
 			try {
 				if(typeFlag) {
 					userInput = input.nextLine();
+					isValidInput(2, userInput);
 				}
 				
 				switch(menuName) {
@@ -500,7 +501,9 @@ public class Melbn{
 //						System.out.println(matchingList.size());
 						break;
 					case 3: //ratingMenu
-						matchingList = findMatchingList(Double.parseDouble(userInput));
+						double rating = Double.parseDouble(userInput);
+						if(rating < 0) throw new MelbnException("You need to a positive number. Please select again.");
+						matchingList = findMatchingList(rating);
 						break;
 				}
 				
